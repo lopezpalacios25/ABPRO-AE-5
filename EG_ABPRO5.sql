@@ -16,7 +16,7 @@ Parte 1: Crear entorno de trabajo
 */
 
 CREATE DATABASE control_usuarios;
-
+use control_usuarios;
 CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin';
 GRANT ALL PRIVILEGES ON * . * TO 'admin'@'localhost';
 
@@ -74,7 +74,6 @@ INSERT INTO control_usuarios.ingresos (id_ingreso, id_usuario, fecha_ingreso) VA
 
 /*
 Parte 5: Justifique cada tipo de dato utilizado. ¿Es el óptimo en cada caso?
-
 TABLA USUARIO
 id_usuario INT PRIMARY KEY: permite id de tipo numérico.
 nombre varchar(20): permite caracteres para ingresar el nombre.
@@ -94,7 +93,7 @@ fecha_ingreso datetime default now(): permite ingresar fecha y hora en el dato.
 Parte 6: Crear una nueva tabla
 */
 CREATE TABLE control_usuarios.contactos (
-    id_contacto INT,
+    id_contacto INT PRIMARY KEY,
     id_usuario INT,
     telefono VARCHAR(12),
     email VARCHAR(20)
@@ -106,16 +105,11 @@ Parte 7: Modifique la columna teléfono de contacto, para crear un vínculo entr
 Usuarios y la
 tabla Contactos.
 */
-ALTER TABLE control_usuarios.contactos ADD PRIMARY KEY(telefono);
 
-INSERT INTO control_usuarios.contactos VALUES
-	(1, 1, '+5697551234', 'jlopez@gmail.com'),
-	(2, 2, '+56975555678', 'ccaceres@gmail.com'),
-	(3, 3, '+56975559876', 'plopez@gmail.com'),
-	(4, 4, '+56975554321', 'amartinez@gmail.com'),
-	(5, 5, '+56975552468', 'dsanchez@gmail.com'),
-	(6, 6, '+56975551357', 'lrodriguez@gmail.com'),
-	(7, 7, '+56975553698', 'mfernandez@gmail.com'),
-	(8, 8, '+56975557890', 'vdiaz@gmail.com');
-    
-ALTER TABLE control_usuarios.usr_aplicacion ADD FOREIGN KEY (telefono) REFERENCES control_usuarios.contactos (telefono);
+ALTER TABLE ingresos drop foreign key ingresos_ibfk_1;
+ALTER TABLE usr_aplicacion drop primary key;
+ALTER TABLE usr_aplicacion add primary key (id_usuario, telefono);
+ALTER TABLE ingresos ADD CONSTRAINT fk_ingresos foreign key (id_usuario) references usr_aplicacion (id_usuario);
+
+ALTER TABLE contactos ADD CONSTRAINT fk_contactos FOREIGN KEY (id_usuario, telefono) REFERENCES usr_aplicacion (id_usuario, telefono);
+
